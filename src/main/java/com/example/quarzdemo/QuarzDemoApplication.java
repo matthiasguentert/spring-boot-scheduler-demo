@@ -12,6 +12,4 @@ public class QuarzDemoApplication {
 
         SpringApplication.run(QuarzDemoApplication.class, args);
     }
-
-
 }
