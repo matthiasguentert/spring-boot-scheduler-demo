@@ -1,2 +1,5 @@
 scheduler:
   cron: "0/2 * * * * *"
+  some-array:
+    - value1
+    - value2

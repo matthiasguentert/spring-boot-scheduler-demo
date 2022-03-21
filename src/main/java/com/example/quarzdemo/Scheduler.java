@@ -11,24 +11,34 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
+import static org.springframework.scheduling.annotation.Scheduled.CRON_DISABLED;
+
 @Component
 public class Scheduler {
     private static final Logger logger = LoggerFactory.getLogger(Scheduler.class);
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+    private final SchedulerProperties schedulerProperties;
     private final RestTemplate restTemplate;
 
-    public Scheduler(RestTemplateBuilder restTemplateBuilder) {
+    public Scheduler(SchedulerProperties schedulerProperties, RestTemplateBuilder restTemplateBuilder) {
+
+        this.schedulerProperties = schedulerProperties;
         this.restTemplate = restTemplateBuilder.build();
     }
 
     @Scheduled(timeUnit = TimeUnit.SECONDS, fixedRate = 2)
     public void scheduleTaskWithFixedRate() {
+
         var result = this.restTemplate.getForEntity("https://www.google.ch", String.class);
         var status = result.getStatusCodeValue();
 
         logger.info("Fixed Rate Task :: Execution Time - {} :: Status - {}",
                 dateTimeFormatter.format(LocalDateTime.now()),
                 status);
+
+        for (var val : this.schedulerProperties.getSomeArray()) {
+            logger.info(val);
+        }
     }
 
     @Scheduled(timeUnit = TimeUnit.SECONDS, fixedRate = 2)
@@ -50,5 +60,14 @@ public class Scheduler {
     @Scheduled(cron = "#{schedulerProperties.cron}")
     public void scheduleTaskWithCronExpression() {
         logger.info("Cron Task :: Execution Time - {}", dateTimeFormatter.format(LocalDateTime.now()));
+
+        for (var value : this.schedulerProperties.getSomeArray()) {
+            logger.info(value);
+        }
+    }
+
+    @Scheduled(cron = CRON_DISABLED)
+    public void scheduleTaskDisabled() {
+        logger.info("You'll never see me!");
     }
 }

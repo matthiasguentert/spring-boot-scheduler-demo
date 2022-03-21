@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class SchedulerProperties {
     private String cron;
     private int fixedRate;
+    private String[] someArray;
 
     public String getCron() {
         return cron;
@@ -23,5 +24,13 @@ public class SchedulerProperties {
 
     public void setFixedRate(int fixedRate) {
         this.fixedRate = fixedRate;
+    }
+
+    public String[] getSomeArray() {
+        return someArray;
+    }
+
+    public void setSomeArray(String[] someArray) {
+        this.someArray = someArray;
     }
 }
